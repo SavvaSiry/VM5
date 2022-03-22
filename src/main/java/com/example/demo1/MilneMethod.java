@@ -5,11 +5,12 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 
 public class MilneMethod {
-
+    IFunc func;
     double step;
     private final ArrayList<Pair<Double, Double>> values;
 
-    public MilneMethod(ArrayList<Pair<Double, Double>> answers, double step) {
+    public MilneMethod(IFunc func, ArrayList<Pair<Double, Double>> answers, double step) {
+        this.func = func;
         values = answers;
         this.step = step;
         for (int i = 4; i < values.size(); i++) {
@@ -33,7 +34,7 @@ public class MilneMethod {
 
 
     private double getResultOfFunction (double xi, double yi) {
-        return Math.pow(xi, 3)-2*yi;
+        return func.solve(xi, yi);
     }
 
     public ArrayList<Pair<Double, Double>> getValues() {

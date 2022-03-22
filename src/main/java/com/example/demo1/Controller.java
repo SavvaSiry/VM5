@@ -20,6 +20,8 @@ public class Controller {
     @FXML
     private ComboBox i_comboBox;
     @FXML
+    private ComboBox i_comboBoxFunc;
+    @FXML
     private Button i_confirmButton;
     @FXML
     private Label i_resultsInfo;
@@ -39,10 +41,20 @@ public class Controller {
             double step;
             if (Double.parseDouble(i_comboBox.getValue().toString()) >= 0.0001 ) step = 0.1;
             else step = 0.01;
-            RungeKuttaMethod rkm = new RungeKuttaMethod(x_start, y_start, step, x_end);
-            MilneMethod mm = new MilneMethod(rkm.getValues(), step);
-            i_graph.getData().clear();
+
+
+            IFunc func = switch (i_comboBoxFunc.getValue().toString()) {
+                case "y'= x^2 - 2y" -> (xi, yi) -> Math.pow(xi, 2) - 2 * yi;
+                case "y'= sin(x) + y" -> (xi, yi) -> Math.sin(xi) - yi;
+                case "y'= x^3 + y" -> (xi, yi) -> Math.pow(xi, 3) + yi;
+                default -> (xi, yi) -> 0;
+            };
+            RungeKuttaMethod rkm = new RungeKuttaMethod(func, x_start, y_start, step, x_end);
+            MilneMethod mm = new MilneMethod(func, rkm.getValues(), step);
+
+
             XYChart.Series<String, Double> series = new XYChart.Series<>();
+            i_graph.getData().clear();
             for (int i = 0; i < mm.getValues().size(); i++) {
                 series.getData().add(new XYChart.Data<>(mm.getValues().get(i).getKey().toString(), mm.getValues().get(i).getValue()));
             }
@@ -58,7 +70,8 @@ public class Controller {
                 y0.getText().matches("-?((\\d*)|(\\d+\\.\\d*))") && !y0.getText().equals("") &&
                 Xn.getText().matches("-?((\\d*)|(\\d+\\.\\d*))") && !Xn.getText().equals("") &&
                 Double.parseDouble(x0.getText()) < Double.parseDouble(Xn.getText()) &&
-                i_comboBox.getValue() != null;
+                i_comboBox.getValue() != null &&
+                i_comboBoxFunc.getValue() != null;
     }
 
 }

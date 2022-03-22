@@ -5,11 +5,12 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 
 public class RungeKuttaMethod {
-
+    IFunc func;
     private final double step;
     private final ArrayList<Pair<Double, Double>> values;
 
-    public RungeKuttaMethod(double startX, double startY, double step, double lastX) {
+    public RungeKuttaMethod(IFunc func, double startX, double startY, double step, double lastX) {
+        this.func = func;
         this.step = step;
         values = new ArrayList<>();
         values.add(new Pair<>(startX, startY));
@@ -37,7 +38,7 @@ public class RungeKuttaMethod {
     }
 
     private double getResultOfFunction (double xi, double yi) {
-        return Math.pow(xi, 3)-2*yi;
+        return func.solve(xi, yi);
     }
 
     public ArrayList<Pair<Double, Double>> getValues() {
